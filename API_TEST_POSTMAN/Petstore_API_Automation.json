@@ -1,0 +1,125 @@
+{
+  "info": {
+    "name": "Corrected Petstore API Automation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Full Pet (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "// Save the petId to collection variables",
+              "pm.collectionVariables.set(\"petId\", jsonData.id);",
+              "",
+              "pm.test(\"ID is correct\", function () {",
+              "    pm.expect(jsonData.id).to.eql(jsonData.id);",
+              "});",
+              "pm.test(\"Name is doggie\", function () {",
+              "    pm.expect(jsonData.name).to.eql(\"doggie\");",
+              "});",
+              "pm.test(\"Status is available\", function () {",
+              "    pm.expect(jsonData.status).to.eql(\"available\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 0,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"doggie\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"string\"\n    }\n  ],\n  \"status\": \"available\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/pet",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Pet by ID (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Pet ID matches\", function () {",
+              "    pm.expect(jsonData.id).to.eql(Number(pm.collectionVariables.get(\"petId\")));",
+              "});",
+              "",
+              "pm.test(\"Name is doggie\", function () {",
+              "    pm.expect(jsonData.name).to.eql(\"doggie\");",
+              "});",
+              "",
+              "pm.test(\"Category and Tags exist\", function () {",
+              "    pm.expect(jsonData.category).to.be.an('object');",
+              "    pm.expect(jsonData.tags).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/pet/{{petId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://petstore.swagger.io/v2"
+    },
+    {
+      "key": "petId",
+      "value": "0"
+    }
+  ]
+}
